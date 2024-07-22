@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_USER: dockermysql
+      MYSQL_PASSWORD: asnpa 94
+      MYSQL_ROOT_PASSWORD: asnpa 94
+      MYSQL_DATABASE: registrations
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD","mysqladmin","ping","-h","mysqldb"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+      start_period: 10s
+  userregistrationsystem:
+      image: amolnagose/userregistrationsystem:1.0
+      container_name: registrations
+      build: .
+      depends_on:
+        mysqldb:
+          condition: service_healthy
+
+#      restart: always
+      ports:
+        - '8081:9090'
+      environment:
+        HOST: mysqldb
+        DB_USERNAME: dockermysql
+
+
+#      environment:
+#        MYSQL_HOST: mysqldb
+#        MYSQL_USERNAME: dockermysql
+#        MYSQL_PASSWORD: asnpa 94
